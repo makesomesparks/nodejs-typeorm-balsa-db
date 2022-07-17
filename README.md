@@ -1,7 +1,15 @@
-# Awesome Project Build with TypeORM
+# 발사/balsa(pals̕a)
 
-Steps to run this project:
+발사/balsa(pals̕a) means to fire.
 
-1. Run `npm i` command
-2. Setup database settings inside `data-source.ts` file
-3. Run `npm start` command
+Perhaps..
+
+This app like a public database will be created.
+
+## Todo
+
+- [ ] URI set rules like `www.balsa.to/taegyun.ko/cats`
+
+- [ ] Response rules, public or private
+
+- [ ] service public database

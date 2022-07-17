@@ -26,7 +26,7 @@ app.all('/:usertoken/:path*', (req: Request, res: Response, next: NextFunction) 
     console.log("req.user : " + req.params.usertoken);
     console.log("req.path : " + req.path);
     console.log("user : " + req.query.token);
-    res.status(200).json({});
+    res.status(200).json(response);
 });
 
 app.use(router);
