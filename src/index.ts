@@ -1,15 +1,19 @@
 import express, { Request, Response, NextFunction } from 'express';
+import DB from './db';
 import ResponseSet from './entity/ResponseSet';
-import Utils from './utils';
+import RequestUtils from './utils/RequestUtil';
 
 const app = express();
 const router = express.Router();
 
 var PORT = 3000;
 
-app.all('/:usertoken/:path*', (req: Request, res: Response, next: NextFunction) =>
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+app.all('/:username/:path*', (req: Request, res: Response, next: NextFunction) =>
 {
-    const utils = Utils(req);
+    const utils = new RequestUtils(req);
 
     const username = utils.getUsername();
     const token = utils.getToken();
@@ -17,9 +21,9 @@ app.all('/:usertoken/:path*', (req: Request, res: Response, next: NextFunction) 
 
     let response: ResponseSet = new ResponseSet();
 
-    if (Utils(req).getMethod() == "get")
+    if (utils.getMethod() == "GET")
     {
-
+        const db = new DB(utils.getUsername());
     }
 
     console.log(ip);

@@ -1,11 +1,20 @@
-import { DataSource } from "typeorm";
+import { DataSource, DeleteResult } from "typeorm";
 import { Source } from "./data-source";
 import { Data } from "./entity/Data";
 
-const DB = (username: string) =>
+class DB
 {
-   set: async (path: string, value: any) =>
+   username: string;
+
+   constructor (username: string)
    {
+      this.username = username;
+   }
+
+   async set(path: string, value: any)
+   {
+      const username = this.username;
+
       return new Promise<boolean>(async (resolve, reject) =>
       {
          try
@@ -33,8 +42,10 @@ const DB = (username: string) =>
       });
    };
 
-   get: async (path: string) =>
+   async get(path: string)
    {
+      const username = this.username;
+
       return new Promise<Data | undefined>(async (resolve, reject) =>
       {
          try
@@ -51,12 +62,39 @@ const DB = (username: string) =>
          {
             console.log(new Date().toISOString());
             console.log(e);
-            console.log(`get:\t/${ username }/${ path }`);
+            console.log(`get:\t/${ this.username }/${ path }`);
          }
 
          resolve(undefined);
       });
    };
-};
 
-export default DB;
+   async delete(path: string)
+   {
+      const username = this.username;
+
+      return new Promise<boolean>(async (resolve, reject) =>
+      {
+         try
+         {
+            const src: DataSource = await Source(username).initialize();
+            const result: DeleteResult = await src.manager.delete(Data, { path: path });
+
+            if (result.affected > 0)
+            {
+               resolve(true);
+            }
+         }
+         catch (e: any)
+         {
+            console.log(new Date().toISOString());
+            console.log(e);
+            console.log(`delete:\t/${ this.username }/${ path }`);
+         }
+
+         resolve(false);
+      });
+   };
+}
+
+export { DB as default };
