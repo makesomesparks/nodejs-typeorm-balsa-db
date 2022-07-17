@@ -1,13 +1,18 @@
-import "reflect-metadata"
-import { DataSource } from "typeorm"
-import { User } from "./entity/User"
+import "reflect-metadata";
+import { DataSource, DataSourceOptions } from "typeorm";
+import { Data } from "./entity/Data";
 
-export const AppDataSource = new DataSource({
-    type: "sqlite",
-    database: "database.sqlite",
-    synchronize: true,
-    logging: false,
-    entities: [User],
-    migrations: [],
-    subscribers: [],
-})
+export const Source = (username: string) =>
+{
+    const option: DataSourceOptions = {
+        type: "sqlite",
+        database: `${ username }.sqlite`,
+        synchronize: true,
+        logging: false,
+        entities: [ Data ],
+        migrations: [],
+        subscribers: [],
+    };
+
+    return new DataSource(option);
+};
