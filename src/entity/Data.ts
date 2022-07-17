@@ -4,11 +4,14 @@ import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
 export class Data
 {
     @Index({ fulltext: true, unique: true })
-    @Column({ type: "varchar", nullable: false, default: "", length: 255 })
+    @Column({ type: "varchar", nullable: false, default: "" })
     path: string;
 
     @Column({ type: "boolean", nullable: false, default: false })
-    public: string;
+    public: boolean;
+
+    @Column({ type: "varchar", nullable: false, default: "" })
+    passphrase: string;
 
     @Column({ type: "varchar", nullable: false, default: "" })
     value: string;
@@ -26,6 +29,7 @@ export class Data
         if (value)
         {
             this.value = value;
+            this.date = new Date();
         }
     }
 }
