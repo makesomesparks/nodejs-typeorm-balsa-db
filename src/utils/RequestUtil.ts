@@ -1,6 +1,8 @@
 import { Request } from "express";
-import RequestScheme from "../scheme/RequestScheme";
+import RequestScheme, { ResponseType, TypeType } from "../scheme/RequestScheme";
 import Cute from "cute-string-util";
+import { Data } from "../entity/Data";
+import StringUtils from "./StringUtils";
 
 export class Path
 {
@@ -29,9 +31,9 @@ class RequestUtil
       this.request = request;
    }
 
-   private isRequestAlive(): boolean
+   private isRequestAlive(request: Request = this.request): boolean
    {
-      if (typeof this.request === "undefined" || this.request === null)
+      if (typeof request === "undefined" || request === null)
       {
          return false;
       }
@@ -41,7 +43,7 @@ class RequestUtil
 
    getIPv4(request: Request = this.request): string
    {
-      if (this.isRequestAlive())
+      if (this.isRequestAlive(request))
       {
          let ip = request.socket.remoteAddress;
 
@@ -56,9 +58,34 @@ class RequestUtil
       return "";
    }
 
+   getParameter(request: Request | string = this.request, parameter?: string): string
+   {
+      let result: string = "";
+
+      if (typeof request === "string")
+      {
+         parameter = request;
+         request = this.request;
+      }
+
+      if (this.isRequestAlive(request))
+      {
+         if (request.method === 'POST' || request.method === 'PUT' || request.method === 'PATCH')
+         {
+            result = request.body[ parameter ];
+         }
+         else
+         {
+            result = request.params[ parameter ];
+         }
+      }
+
+      return result;
+   }
+
    getMethod(request: Request = this.request): "GET" | "SET" | "DELETE" | "UNKNOWN"
    {
-      if (this.isRequestAlive())
+      if (this.isRequestAlive(request))
       {
          if (request.method === 'POST' || request.method === 'PUT' || request.method === 'PATCH')
          {
@@ -86,7 +113,7 @@ class RequestUtil
 
    getUsername(request: Request = this.request): string | undefined
    {
-      if (this.isRequestAlive())
+      if (this.isRequestAlive(request))
       {
          const username = request.params.username.split(":");
          const result = username.length > 0 ? username[ 0 ] : "";
@@ -99,7 +126,7 @@ class RequestUtil
 
    getToken(request: Request = this.request): string | undefined
    {
-      if (this.isRequestAlive())
+      if (this.isRequestAlive(request))
       {
          const username = request.params.username.split(":");
          const result = username.length > 1 ? username[ 1 ] : "";
@@ -114,7 +141,7 @@ class RequestUtil
    {
       let path: Path = new Path();
 
-      if (this.isRequestAlive())
+      if (this.isRequestAlive(request))
       {
          const p: string[] = request.params.path.split("/");
 
@@ -147,6 +174,46 @@ class RequestUtil
       }
 
       return path;
+   }
+
+   getResponseType(request: Request = this.request): ResponseType
+   {
+      let result: ResponseType = "plain";
+
+      if (this.isRequestAlive(request))
+      {
+         const responseType = this.getParameter(RequestScheme.type);
+
+         if (!Cute.isEmpty(responseType))
+         {
+            result = (responseType as ResponseType);
+         }
+      }
+
+      return result;
+   }
+
+   getData(request: Request = this.request): Data
+   {
+      let data: Data = new Data();
+
+      if (this.isRequestAlive(request))
+      {
+         const isPublic = this.getParameter(RequestScheme.public);
+         const passphrase = this.getParameter(RequestScheme.passphrase);
+         const type: TypeType = this.getParameter(RequestScheme.type) as TypeType;
+         const value = this.getParameter(RequestScheme.value);
+
+         data.public = StringUtils.toBoolean(isPublic);
+         data.passphrase = passphrase;
+         data.type = type;
+         data.value = value;
+         data.date = new Date();
+
+         data.path = this.getPath().pathString;
+      }
+
+      return data;
    }
 };
 

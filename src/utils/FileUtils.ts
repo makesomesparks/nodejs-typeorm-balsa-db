@@ -1,11 +1,17 @@
 import path from "path";
+import fs from "fs";
 
-const FileUtils = () =>
+const FileUtils =
 {
    getRootPath: (): string =>
    {
-      return path.resolve(__dirname);
-   };
+      return process.cwd();
+   },
+
+   getFilePath: (filepath: string): string =>
+   {
+      return FileUtils.getRootPath() + "/" + filepath;
+   }
 };
 
-module.exports = FileUtils;
+export { FileUtils as default };

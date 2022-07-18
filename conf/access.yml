@@ -1,14 +1,12 @@
 users:
-  - balsa
-  - infra
-
-token:
-  balsa: nahjiaph3uR3ohw2Uu3DuGh3ikae4hieQuaNgaiGiefi2
-  infra: eThaalieraeshee5vae8doBaew2um8noixaingoith1zu
+  balsa:
+    - token: nahjiaph3uR3ohw2Uu3DuGh3ikae4hieQuaNgaiGiefi2
+      unixtime: 1658110855
+      expired: false
+  infra:
+    - eThaalieraeshee5vae8doBaew2um8noixaingoith1zu
 
 passthrough:
   ipv4:
-    allow:
+    infra:
       - 0.0.0.0
-    users:
-      - infra

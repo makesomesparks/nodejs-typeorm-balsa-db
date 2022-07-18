@@ -11,7 +11,7 @@ class DB
       this.username = username;
    }
 
-   async set(path: string, value: any)
+   async set(data: Data): Promise<boolean>
    {
       const username = this.username;
 
@@ -20,9 +20,8 @@ class DB
          try
          {
             const src: DataSource = await Source(username).initialize();
-            const data = new Data(path, value);
 
-            await src.manager.delete(Data, { path: path });
+            await src.manager.delete(Data, { path: data.path });
             const result: Data = await src.manager.save(data);
 
             if (result.value)
@@ -34,19 +33,19 @@ class DB
          {
             console.log(new Date().toISOString());
             console.log(e);
-            console.log(`set:\t${ value }`);
-            console.log(`to:\t/${ username }/${ path }`);
+            console.log(`set:\t${ data.value }`);
+            console.log(`to:\t/${ username }/${ data.path }`);
 
             resolve(false);
          }
       });
    };
 
-   async get(path: string)
+   async get(path: string): Promise<Data>
    {
       const username = this.username;
 
-      return new Promise<Data | undefined>(async (resolve, reject) =>
+      return new Promise<Data>(async (resolve, reject) =>
       {
          try
          {
@@ -69,7 +68,7 @@ class DB
       });
    };
 
-   async delete(path: string)
+   async delete(path: string): Promise<boolean>
    {
       const username = this.username;
 

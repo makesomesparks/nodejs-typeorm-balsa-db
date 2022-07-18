@@ -3,25 +3,12 @@ import { Data } from "./Data";
 export default class ResponseSet
 {
    result: boolean;
+   message: string
    data: Data | Data[] | "";
 
-   constructor (result?: boolean, data?: Data | Data[] | undefined)
+   constructor (result: boolean = false, data: Data | Data[] | "" = "")
    {
-      this.result = false;
-
-      if (result)
-      {
-         this.result = result;
-      }
-
-
-      if (data)
-      {
-         this.data = data;
-      }
-      else
-      {
-         this.data = "";
-      }
+      this.result = result;
+      this.data = data;
    }
 }

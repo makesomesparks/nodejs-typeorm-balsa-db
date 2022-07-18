@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
+import { TypeType } from "../scheme/RequestScheme";
 
 @Entity({ orderBy: { date: "DESC" }, synchronize: true })
 export class Data
@@ -15,6 +16,9 @@ export class Data
 
     @Column({ type: "varchar", nullable: false, default: "" })
     value: string;
+
+    @Column({ type: "varchar", nullable: false, default: "text" })
+    type: TypeType;
 
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     date: Date;
